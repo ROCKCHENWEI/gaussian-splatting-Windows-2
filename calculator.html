@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Seedance 2.0 视频生产成本计算器 - 根据视频时长、计费模式估算 API Token 消耗与人民币成本">
+  <meta name="keywords" content="Seedance 2.0, 视频生成, Token 计算, 成本估算, 字节跳动, AI 视频">
+  <title>Seedance 2.0 视频 Token 计算器</title>
+  <style>
+    /* Braun Design: Less but better. Dieter Rams-inspired minimalism. */
+    :root {
+      --braun-white: #f5f5f0;
+      --braun-bg: #ffffff;
+      --braun-black: #1a1a1a;
+      --braun-gray: #6b6b6b;
+      --braun-border: #e0e0e0;
+      --braun-grid: 8px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Helvetica Neue", Helvetica, Arial, "Noto Sans SC", sans-serif;
+      background: var(--braun-white);
+      color: var(--braun-black);
+      min-height: 100vh;
+      padding: calc(var(--braun-grid) * 4);
+      line-height: 1.5;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+    }
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    h1 {
+      font-size: 24px;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: calc(var(--braun-grid) * 1);
+    }
+    .subtitle {
+      color: var(--braun-gray);
+      font-size: 13px;
+      font-weight: 400;
+      margin-bottom: calc(var(--braun-grid) * 4);
+    }
+    .card {
+      background: var(--braun-bg);
+      border: 1px solid var(--braun-border);
+      padding: calc(var(--braun-grid) * 3);
+      margin-bottom: calc(var(--braun-grid) * 2);
+    }
+    label {
+      display: block;
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--braun-gray);
+      margin-bottom: calc(var(--braun-grid) * 1);
+    }
+    input, select {
+      width: 100%;
+      padding: calc(var(--braun-grid) * 2) 0;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--braun-border);
+      color: var(--braun-black);
+      font-size: 16px;
+      font-family: inherit;
+      transition: border-color 0.15s ease;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-bottom-color: var(--braun-black);
+    }
+    select {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b6b6b' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0 center;
+      padding-right: 20px;
+    }
+    .row { margin-bottom: calc(var(--braun-grid) * 3); }
+    .row:last-child { margin-bottom: 0; }
+    .row-inline { display: flex; gap: calc(var(--braun-grid) * 3); }
+    .row-inline .field { flex: 1; }
+    .result {
+      background: var(--braun-bg);
+      border: 2px solid var(--braun-black);
+      padding: calc(var(--braun-grid) * 3);
+      margin-top: calc(var(--braun-grid) * 2);
+    }
+    .result-title {
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--braun-gray);
+      margin-bottom: calc(var(--braun-grid) * 1);
+    }
+    .result-value {
+      font-size: 32px;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      color: var(--braun-black);
+    }
+    .result-detail {
+      font-size: 13px;
+      color: var(--braun-gray);
+      margin-top: calc(var(--braun-grid) * 1);
+    }
+    .result-note {
+      font-size: 12px;
+      color: var(--braun-gray);
+      margin-top: calc(var(--braun-grid) * 2);
+    }
+    .hidden { display: none; }
+    @media (max-width: 480px) {
+      body { padding: calc(var(--braun-grid) * 2); }
+      .card { padding: calc(var(--braun-grid) * 2); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Seedance 2.0 视频 Token 计算器</h1>
+    <p class="subtitle">根据视频时长与计费模式估算生产成本</p>
+
+    <div class="card">
+      <div class="row row-inline">
+        <div class="field">
+          <label for="minutes">视频时长（分钟）</label>
+          <input type="number" id="minutes" min="0" step="1" value="0" placeholder="0">
+        </div>
+        <div class="field">
+          <label for="seconds">视频时长（秒）</label>
+          <input type="number" id="seconds" min="0" step="0.1" value="15" placeholder="15">
+        </div>
+      </div>
+      <div class="row">
+        <label for="mode">计费模式</label>
+        <select id="mode">
+          <option value="api-pure">API - 纯视频生成（46 元/百万 tokens）</option>
+          <option value="api-edit">API - 视频编辑（28 元/百万 tokens）</option>
+          <option value="web-std">Web 平台 - 标准（180 积分/条）</option>
+          <option value="web-hd">Web 平台 - HD（240 积分/条）</option>
+        </select>
+      </div>
+      <div class="row" id="row-retry">
+        <label for="retries">预估重试次数</label>
+        <input type="number" id="retries" min="0" step="1" value="0" placeholder="0">
+      </div>
+      <div class="row" id="row-ref">
+        <label for="ref">参考素材</label>
+        <select id="ref">
+          <option value="0">无</option>
+          <option value="0.15">轻（+15%）</option>
+          <option value="0.4">重（+40%）</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card result">
+      <div class="result-title">预估成本</div>
+      <div class="result-value" id="costDisplay">--</div>
+      <div class="result-detail" id="detailDisplay"></div>
+      <div class="result-note" id="noteDisplay"></div>
+    </div>
+  </div>
+
+  <script>
+    // ========== 计费公式（修改此处即可更新计算逻辑） ==========
+    // 基准：约 2.06 万 tokens/秒（基于 15 秒 ≈ 30.888 万）
+    const TOKENS_PER_SECOND = 20600;
+    const PRICE_PURE_GEN = 46;   // 元/百万tokens
+    const PRICE_VIDEO_EDIT = 28; // 元/百万tokens
+    const WEB_CREDITS_STD = 180;
+    const WEB_CREDITS_HD = 240;
+    const CREDITS_PER_USD = 100;
+    const SECONDS_PER_VIDEO = 15; // Web 模式按约 15 秒/条估算
+
+    const inputs = ['minutes', 'seconds', 'mode', 'retries', 'ref'];
+    inputs.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('input', calculate);
+      if (el) el.addEventListener('change', calculate);
+    });
+
+    function calculate() {
+      const minutes = parseFloat(document.getElementById('minutes').value) || 0;
+      const seconds = parseFloat(document.getElementById('seconds').value) || 0;
+      const duration = minutes * 60 + seconds;
+      const mode = document.getElementById('mode').value;
+      const retries = Math.max(0, parseInt(document.getElementById('retries').value, 10) || 0);
+      const refFactor = parseFloat(document.getElementById('ref').value) || 0;
+
+      document.getElementById('row-retry').classList.toggle('hidden', mode.startsWith('web'));
+      document.getElementById('row-ref').classList.toggle('hidden', mode.startsWith('web'));
+
+      if (duration <= 0) {
+        document.getElementById('costDisplay').textContent = '--';
+        document.getElementById('detailDisplay').textContent = '请输入有效时长';
+        document.getElementById('noteDisplay').textContent = '';
+        return;
+      }
+
+      if (mode.startsWith('api')) {
+        // tokens = duration * base * (1 + refFactor) * (1 + retries)
+        const tokens = duration * TOKENS_PER_SECOND * (1 + refFactor) * (1 + retries);
+        const pricePerM = mode === 'api-pure' ? PRICE_PURE_GEN : PRICE_VIDEO_EDIT;
+        const costCny = (tokens / 1_000_000) * pricePerM;
+        const costPerSec = costCny / duration;
+
+        document.getElementById('costDisplay').textContent = '¥' + costCny.toFixed(2);
+        document.getElementById('detailDisplay').textContent =
+          '预估 ' + (tokens / 10000).toFixed(1) + ' 万 tokens · 约 ¥' + costPerSec.toFixed(2) + '/秒';
+        document.getElementById('noteDisplay').textContent =
+          '基准约 ' + (TOKENS_PER_SECOND / 10000).toFixed(1) + ' 万 tokens/秒，计费规则变更时请修改公式';
+      } else {
+        const creditsPerVideo = mode === 'web-std' ? WEB_CREDITS_STD : WEB_CREDITS_HD;
+        const videoCount = Math.max(1, Math.ceil(duration / SECONDS_PER_VIDEO));
+        const totalCredits = videoCount * creditsPerVideo;
+        const costUsd = totalCredits / CREDITS_PER_USD;
+
+        document.getElementById('costDisplay').textContent = '$' + costUsd.toFixed(2) + ' (' + totalCredits + ' 积分)';
+        document.getElementById('detailDisplay').textContent =
+          '约 ' + videoCount + ' 条视频（按 ' + SECONDS_PER_VIDEO + ' 秒/条估算）';
+        document.getElementById('noteDisplay').textContent =
+          '1 美元 = 100 积分，积分永不过期';
+      }
+    }
+
+    calculate();
+  </script>
+</body>
+</html>
