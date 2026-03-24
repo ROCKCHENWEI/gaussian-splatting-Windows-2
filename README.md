@@ -5,6 +5,10 @@
 [![Vercel](https://img.shields.io/badge/Vercel-在线演示-black?logo=vercel)](https://260306.vercel.app)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+## Mesh2Splat（3D Gaussian Splatting）本地部署
+
+本仓库含 [Electronic Arts Mesh2Splat](https://github.com/electronicarts/mesh2splat) 的 **Windows / macOS** 中文说明、脚本与验收清单，入口见 **[docs/mesh2splat/README.md](docs/mesh2splat/README.md)**；Windows 最快步骤见 **[docs/mesh2splat/WINDOWS_QUICKSTART.md](docs/mesh2splat/WINDOWS_QUICKSTART.md)**。
+
 ---
 
 ## 功能
