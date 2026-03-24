@@ -1,0 +1,38 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -5,8 +5,14 @@ project(Mesh2Splat)
+ set(CMAKE_CXX_STANDARD_REQUIRED ON)
+ 
+ set(THIRD_PARTY_DIR         ${CMAKE_SOURCE_DIR}/thirdParty)
+-set(GLFW_DIR                ${THIRD_PARTY_DIR}/glfw)
++if(APPLE AND EXISTS ${THIRD_PARTY_DIR}/GLFW)
++    set(GLFW_DIR            ${THIRD_PARTY_DIR}/GLFW)
++else()
++    set(GLFW_DIR            ${THIRD_PARTY_DIR}/glfw)
++endif()
+ set(GLEW_DIR                ${THIRD_PARTY_DIR}/glew)
+ set(GLM_DIR                 ${THIRD_PARTY_DIR}/glm)
+ set(IMGUI_DIR               ${THIRD_PARTY_DIR}/imgui)
+@@ -62,7 +68,20 @@ target_compile_definitions(Mesh2Splat PRIVATE GLEW_STATIC)
+ if (WIN32)
+     target_link_libraries(Mesh2Splat 
+         ${GLFW_DIR}/lib-vc2022/glfw3.lib 
+         ${GLEW_DIR}/lib/Release/x64/glew32s.lib 
+         opengl32)
++elseif(APPLE)
++    find_package(PkgConfig QUIET)
++    if(PKG_CONFIG_FOUND)
++        pkg_check_modules(GLFW glfw3)
++        pkg_check_modules(GLEW glew)
++    endif()
++    if(GLFW_FOUND AND GLEW_FOUND)
++        target_include_directories(Mesh2Splat PRIVATE ${GLFW_INCLUDE_DIRS} ${GLEW_INCLUDE_DIRS})
++        target_link_libraries(Mesh2Splat ${GLFW_LIBRARIES} ${GLEW_LIBRARIES}
++            "-framework OpenGL" "-framework Cocoa" "-framework IOKit" "-framework CoreVideo")
++    else()
++        target_link_libraries(Mesh2Splat glfw glew
++            "-framework OpenGL" "-framework Cocoa" "-framework IOKit" "-framework CoreVideo")
++    endif()
+ else()
+     target_link_libraries(Mesh2Splat glfw glew GL) #todo
+ endif()

@@ -2,3 +2,6 @@
 .snapshots
 .cursor
 .vercel
+
+# 仅忽略仓库根目录下的上游克隆（勿用 mesh2splat/，否则会误忽略 docs/mesh2splat/）
+/mesh2splat/
