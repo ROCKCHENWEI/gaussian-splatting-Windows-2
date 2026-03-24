@@ -15,17 +15,19 @@
 ## 仓库结构
 
 ```
+├── mesh2splat/        # EA Mesh2Splat 源码 + macOS 可移植性修改（见 docs/mesh2splat/MACOS_SOURCE_CHANGES.md）
 ├── docs/mesh2splat/   # 部署与构建说明
 ├── scripts/           # Windows PowerShell / macOS Shell
-├── patches/           # CMake macOS 补丁（相对上游）
+├── patches/           # CMake macOS 补丁（与已合入 mesh2splat/CMakeLists.txt 对照用）
 ├── LICENSE
 └── README.md
 ```
 
 ## 说明
 
-- **可执行程序**不在本仓库中；请按文档克隆官方 `electronicarts/mesh2splat` 后在本地编译。
-- 若将本仓库与 `mesh2splat` 放在**同级目录**，可使用 `scripts/mesh2splat-win-build.ps1`（Windows）或 `scripts/mesh2splat-macos-build.sh`（macOS）辅助构建。
+- **可执行程序**需在本地编译生成（`mesh2splat/bin/Release/`，该目录已 `.gitignore`）。
+- **Windows**：进入 `mesh2splat` 运行 `run_build_release.bat`，或使用仓库根目录 `scripts/mesh2splat-win-build.ps1`。
+- **macOS**：见 [docs/mesh2splat/MACOS_BUILD.md](docs/mesh2splat/MACOS_BUILD.md)；或执行 `./scripts/mesh2splat-macos-build.sh`（默认使用本仓库内 `mesh2splat/`）。
 
 ## License
 

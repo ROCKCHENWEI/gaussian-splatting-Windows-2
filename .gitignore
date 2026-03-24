@@ -3,5 +3,7 @@
 .cursor
 .vercel
 
-# 仅忽略仓库根目录下的上游克隆（勿用 mesh2splat/，否则会误忽略 docs/mesh2splat/）
-/mesh2splat/
+# Mesh2Splat 源码已纳入本仓库；仅忽略本地构建产物
+/mesh2splat/build/
+/mesh2splat/bin/
+/mesh2splat/lib/
