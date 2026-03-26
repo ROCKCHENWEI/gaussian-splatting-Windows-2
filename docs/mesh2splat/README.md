@@ -13,6 +13,8 @@
 | [MACOS_SOURCE_CHANGES.md](./MACOS_SOURCE_CHANGES.md) | 相对上游的 macOS 源码改动清单 |
 | [CLONE_AND_BUILD.md](./CLONE_AND_BUILD.md) | 克隆与构建总览 |
 | [MVP_ACCEPTANCE.md](./MVP_ACCEPTANCE.md) | MVP 验收清单 |
+| [../GIT_WORKFLOW.md](../GIT_WORKFLOW.md) | Git 远程与推送约定 |
+| [../DEVELOPMENT.md](../DEVELOPMENT.md) | 深化开发路线图 |
 
 ## 脚本
 

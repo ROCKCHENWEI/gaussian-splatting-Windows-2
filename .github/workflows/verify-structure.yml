@@ -1,0 +1,24 @@
+# 轻量校验：确保关键路径存在（不编译 mesh2splat，避免无 GPU/无 VS 环境）
+name: verify-structure
+
+on:
+  push:
+    branches: [main, mesh2splat-deploy-docs]
+  pull_request:
+    branches: [main, mesh2splat-deploy-docs]
+
+jobs:
+  paths:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check Mesh2Splat tree
+        run: |
+          test -f mesh2splat/CMakeLists.txt
+          test -f mesh2splat/src/main.cpp
+          test -f docs/mesh2splat/README.md
+          test -f scripts/mesh2splat-macos-build.sh
+          test -f scripts/mesh2splat-win-build.ps1
+          test -f patches/mesh2splat-cmake-macos.patch
+          echo "OK: expected files present"

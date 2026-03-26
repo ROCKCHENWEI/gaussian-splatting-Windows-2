@@ -29,6 +29,14 @@
 - **Windows**：进入 `mesh2splat` 运行 `run_build_release.bat`，或使用仓库根目录 `scripts/mesh2splat-win-build.ps1`。
 - **macOS**：见 [docs/mesh2splat/MACOS_BUILD.md](docs/mesh2splat/MACOS_BUILD.md)；或执行 `./scripts/mesh2splat-macos-build.sh`（默认使用本仓库内 `mesh2splat/`）。
 
+## Git 与远程
+
+推送与 `origin` / `gaussian-splatting` 分工见 **[docs/GIT_WORKFLOW.md](docs/GIT_WORKFLOW.md)**。主代码请推送到 **gaussian-splatting-Windows-2**。
+
+## 深化开发
+
+路线图与后续工作见 **[docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)**。
+
 ## License
 
 [MIT](LICENSE)

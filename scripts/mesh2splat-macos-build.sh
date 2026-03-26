@@ -24,7 +24,7 @@ done
 
 if ! brew list glfw &>/dev/null || ! brew list glew &>/dev/null; then
     echo "安装 Homebrew 依赖: glfw, glew"
-    brew install glfw glew
+    HOMEBREW_NO_AUTO_UPDATE=1 brew install glfw glew
 fi
 
 # 应用补丁（若尚未应用）
@@ -38,8 +38,12 @@ fi
 mkdir -p build
 cd build
 CMAKE_PREFIX="$(brew --prefix glfw);$(brew --prefix glew)"
-cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$CMAKE_PREFIX"
-cmake --build . -j"$(sysctl -n hw.ncpu)"
+cmake .. \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_PREFIX_PATH="$CMAKE_PREFIX" \
+  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+JOBS="$(sysctl -n hw.ncpu 2>/dev/null || echo 4)"
+cmake --build . -j"$JOBS"
 
 echo ""
 echo "构建完成。可执行文件: $MESH2SPLAT_DIR/bin/Release/Mesh2Splat 或 build/Mesh2Splat"
